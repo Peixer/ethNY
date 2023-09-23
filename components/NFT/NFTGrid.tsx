@@ -8,9 +8,9 @@ import styles from "../../styles/Buy.module.css";
 
 type Props = {
   isLoading: boolean;
-  data: NFTType[] | undefined;
-  handleSelect: (nft: NFTType) => void;
-  isSelected: (nft: NFTType) => boolean;
+  data: any[] | undefined;
+  handleSelect: (nft: any) => void;
+  isSelected: (nft: any) => boolean;
   emptyText?: string;
 };
 
