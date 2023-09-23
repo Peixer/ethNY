@@ -34,10 +34,10 @@ export default function NFTGrid({
           <div
             key={nft.metadata.id}
             className={styles.nftContainer}
+            style={{border: isSelected(nft) ? "2px solid green" : ""}}
             onClick={() => handleSelect(nft)}
           >
             <NFT nft={nft} />
-            {isSelected(nft) && <h1>Checked</h1>}
           </div>
         ))
       ) : (
