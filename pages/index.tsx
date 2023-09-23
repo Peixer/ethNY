@@ -20,6 +20,7 @@ const Home: NextPage = () => {
   const [data, setData] = useState<any[]>([]);
   const { contract } = useContract(SWAP_ADDRESS);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [filteredData, setFilteredData] = useState<any[]>([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -36,12 +37,14 @@ const Home: NextPage = () => {
               metadata: {
                 id: x.tokenId,
                 image: datas[index].image,
+                collection: index % 2 ? "cochela" : "ens",
                 ...datas[index],
               },
             }));
           })
         );
         setData(data.flat());
+        setFilteredData(data.flat());
         setIsLoading(false);
       }
     }
@@ -79,6 +82,10 @@ const Home: NextPage = () => {
         tokenId: 6,
         tokenURI: "https://api.npoint.io/ac1e20d0428bd0604f07",
       },
+      {
+        tokenId: 6,
+        tokenURI: "https://api.npoint.io/ac1e20d0428bd0604f07",
+      },
     ]);
   }
 
@@ -89,8 +96,20 @@ const Home: NextPage = () => {
       setSelect([...select, nft]);
     }
   }
+
   function isSelected(nft: any) {
     return select.includes(nft);
+  }
+
+  function filter(collectionName: string) {
+    const filtered = data.filter(
+      (x) => x.metadata.collection === collectionName
+    );
+    setFilteredData(filtered);
+  }
+
+  function createOffer() {
+    console.log(select);
   }
 
   return (
@@ -98,9 +117,16 @@ const Home: NextPage = () => {
       <div className={styles.content}>
         <div className={styles.hero}>
           <Container maxWidth="lg">
-            <h1>SEEELLER</h1>
+            <h1>Select </h1>
+
+            <div>
+              <a onClick={() => filter("cochela")}>Cochella</a>
+              <span> | </span>
+              <a onClick={() => filter("ens")}>ENS</a>
+            </div>
+
             <NFTGrid
-              data={data}
+              data={filteredData}
               isLoading={isLoading}
               handleSelect={handleSelect}
               isSelected={isSelected}
@@ -108,6 +134,10 @@ const Home: NextPage = () => {
                 "Looks like there are no NFTs in this collection. Did you import your contract on the thirdweb dashboard? https://thirdweb.com/dashboard"
               }
             />
+            <h2>How much I want to sell this shit</h2>
+            <input type="number"></input>
+            <br></br>
+            <button onClick={createOffer}>Offer</button>
           </Container>
         </div>
       </div>
