@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import styles from "../styles/Home.module.css";
 import NFTGrid from "../components/NFT/NFTGrid";
-import { useAddress, useContract } from "@thirdweb-dev/react";
+import { useAddress, useContract, useContractWrite } from "@thirdweb-dev/react";
 import Container from "../components/Container/Container";
 import { useEffect, useState } from "react";
 import {
@@ -19,8 +19,14 @@ const Home: NextPage = () => {
   const [select, setSelect] = useState<any[]>([]);
   const [data, setData] = useState<any[]>([]);
   const { contract } = useContract(SWAP_ADDRESS);
+  const { mutateAsync, isLoading: isLoadingWrite } = useContractWrite(
+    contract,
+    "createOffer"
+  );
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [addressFieldText, setAddressFieldText] = useState<string>("");
+  const [price, setPrice] = useState<number>(0);
 
   useEffect(() => {
     async function fetchData() {
@@ -37,7 +43,7 @@ const Home: NextPage = () => {
               metadata: {
                 id: x.tokenId,
                 image: datas[index].image,
-                collection: index % 2 ? "cochela" : "ens",
+                collection: index % 2 ? "coachella" : "ens",
                 ...datas[index],
               },
             }));
@@ -108,8 +114,29 @@ const Home: NextPage = () => {
     setFilteredData(filtered);
   }
 
-  function createOffer() {
-    console.log(select);
+  function filterByAddress(address: string) {
+    const filtered = data.filter((x) => x.owner === address);
+    setFilteredData(filtered);
+  }
+
+  async function createOffer() {
+    if (select.length > 0) {
+      const response = await mutateAsync({
+        args: {
+          tokenIds: select.map((x) => ({
+            tokenId: x.tokenId,
+          })),
+          price,
+        } as any,
+      });
+      // Show a confirmation modal 
+      // reset every component in the screen
+      setAddressFieldText("");
+      setPrice(0);
+      setSelect([]);
+      setFilteredData(data);
+      console.log("response", response);
+    }
   }
 
   return (
@@ -117,10 +144,20 @@ const Home: NextPage = () => {
       <div className={styles.content}>
         <div className={styles.hero}>
           <Container maxWidth="lg">
-            <h1>Select </h1>
+            <h1>Select the NFTs you want to exchange</h1>
 
-            <div>
-              <a onClick={() => filter("cochela")}>Cochella</a>
+            <br />
+
+            <input
+              type="text"
+              placeholder="Search by username, address, or ENS"
+              onChange={(e) => setAddressFieldText(e.target.value)}
+              value={addressFieldText}
+              style={{ width: "400px" }}
+            />
+            
+            <div style={{ marginTop: 40 }}>
+              <a onClick={() => filter("coachella")}>Coachella</a>
               <span> | </span>
               <a onClick={() => filter("ens")}>ENS</a>
             </div>
@@ -134,10 +171,16 @@ const Home: NextPage = () => {
                 "Looks like there are no NFTs in this collection. Did you import your contract on the thirdweb dashboard? https://thirdweb.com/dashboard"
               }
             />
-            <h2>How much I want to sell this shit</h2>
-            <input type="number"></input>
+            <h2>Price USDC</h2>
+            <input
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.valueAsNumber)}
+            ></input>
             <br></br>
-            <button onClick={createOffer}>Offer</button>
+            <button onClick={createOffer} style={{ marginTop: 40 }}>
+              Create Offer
+            </button>
           </Container>
         </div>
       </div>
