@@ -37,17 +37,6 @@ export function Navbar() {
           <div className={styles.navConnect}>
             <ConnectWallet theme="dark" btnTitle="Connect Wallet" />
           </div>
-          {address && (
-            <Link className={styles.link} href={`/profile/${address}`}>
-              <Image
-                className={styles.profileImage}
-                src="/user-icon.png"
-                width={42}
-                height={42}
-                alt="Profile"
-              />
-            </Link>
-          )}
         </div>
       </nav>
     </div>
