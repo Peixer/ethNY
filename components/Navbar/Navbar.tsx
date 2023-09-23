@@ -22,15 +22,6 @@ export function Navbar() {
               alt="NFT marketplace sample logo"
             />
           </Link>
-
-          {/* <div className={styles.navMiddle}>
-            <Link href="/buy" className={styles.link}>
-              Buy
-            </Link>
-            <Link href="/sell" className={styles.link}>
-              Sell
-            </Link>
-          </div> */}
         </div>
 
         <div className={styles.navRight}>
