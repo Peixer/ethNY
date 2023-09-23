@@ -23,14 +23,14 @@ export function Navbar() {
             />
           </Link>
 
-          <div className={styles.navMiddle}>
+          {/* <div className={styles.navMiddle}>
             <Link href="/buy" className={styles.link}>
               Buy
             </Link>
             <Link href="/sell" className={styles.link}>
               Sell
             </Link>
-          </div>
+          </div> */}
         </div>
 
         <div className={styles.navRight}>
