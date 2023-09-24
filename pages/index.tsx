@@ -10,10 +10,6 @@ import {
 } from "../const/contractAddresses";
 import axios from "axios";
 
-/**
- * Landing page with a simple gradient background and a hero asset.
- * Free to customize as you see fit.
- */
 const Home: NextPage = () => {
   const address = useAddress();
   const [select, setSelect] = useState<any[]>([]);
@@ -62,7 +58,7 @@ const Home: NextPage = () => {
     //   collectionAddress,
     //   address,
     // ]);
-    //Mock for now
+    //TODO: Mock for now
     return Promise.resolve([
       {
         tokenId: 1,
@@ -121,16 +117,19 @@ const Home: NextPage = () => {
 
   async function createOffer() {
     if (select.length > 0) {
+      // addressFieldText
+      // TODO: convert this addressFieldText to address, it can be a ENS or a address
+
       const response = await mutateAsync({
         args: {
           tokenIds: select.map((x) => ({
             tokenId: x.tokenId,
           })),
+          address: addressFieldText,
           price,
         } as any,
       });
-      // Show a confirmation modal 
-      // reset every component in the screen
+      // TODO: Show a confirmation modal 
       setAddressFieldText("");
       setPrice(0);
       setSelect([]);

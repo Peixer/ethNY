@@ -47,7 +47,8 @@ const Pending: NextPage = () => {
         accepted,
       } as any,
     });
-    // Show a confirmation modal
+
+    // TODO: Show a confirmation modal
     // reset every component in the screen
     console.log("response", response);
   }
