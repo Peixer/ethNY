@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import styles from "../styles/Home.module.css";
 import NFTGrid from "../components/NFT/NFTGrid";
-import { useAddress, useContract } from "@thirdweb-dev/react";
+import { useAddress, useContract, useContractWrite } from "@thirdweb-dev/react";
 import Container from "../components/Container/Container";
 import { useEffect, useState } from "react";
 import {
@@ -19,8 +19,14 @@ const Home: NextPage = () => {
   const [select, setSelect] = useState<any[]>([]);
   const [data, setData] = useState<any[]>([]);
   const { contract } = useContract(SWAP_ADDRESS);
+  const { mutateAsync, isLoading: isLoadingWrite } = useContractWrite(
+    contract,
+    "createOffer"
+  );
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [addressFieldText, setAddressFieldText] = useState<string>("");
+  const [price, setPrice] = useState<number>(0);
 
   useEffect(() => {
     async function fetchData() {
@@ -37,7 +43,7 @@ const Home: NextPage = () => {
               metadata: {
                 id: x.tokenId,
                 image: datas[index].image,
-                collection: index % 2 ? "cochela" : "ens",
+                collection: index % 2 ? "coachella" : "ens",
                 ...datas[index],
               },
             }));
@@ -108,8 +114,29 @@ const Home: NextPage = () => {
     setFilteredData(filtered);
   }
 
-  function createOffer() {
-    console.log(select);
+  function filterByAddress(address: string) {
+    const filtered = data.filter((x) => x.owner === address);
+    setFilteredData(filtered);
+  }
+
+  async function createOffer() {
+    if (select.length > 0) {
+      const response = await mutateAsync({
+        args: {
+          tokenIds: select.map((x) => ({
+            tokenId: x.tokenId,
+          })),
+          price,
+        } as any,
+      });
+      // Show a confirmation modal 
+      // reset every component in the screen
+      setAddressFieldText("");
+      setPrice(0);
+      setSelect([]);
+      setFilteredData(data);
+      console.log("response", response);
+    }
   }
 
   return (
@@ -139,7 +166,9 @@ const Home: NextPage = () => {
               <input placeholder="input amount to sell"type="number" style={{ borderRadius: '15px', height: '30px', width: '200px'}}></input>
             </div>
             <br></br>
-            <button onClick={createOffer}>Offer</button>
+            <button onClick={createOffer} style={{ marginTop: 40 }}>
+              Create Offer
+            </button>
           </Container>
         </div>
       </div>
