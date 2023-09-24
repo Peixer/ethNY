@@ -165,7 +165,20 @@ const Home: NextPage = () => {
               <input placeholder="input amount to sell"type="number" style={{ borderRadius: '15px', height: '30px', width: '200px'}}></input>
             </div>
             <br></br>
-            <button onClick={createOffer} style={{ marginTop: 40 }}>
+
+            <button onClick={createOffer} style={{
+                  marginTop: 40,
+                  fontSize: '18px', 
+                  padding: '10px 20px', 
+                  borderRadius: '8px',
+                  backgroundColor: '#4CAF50', // Example color for Accept
+                  color: 'white',
+                  cursor: 'pointer',
+                  border: 'none'
+                }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#45a049'} // Darker shade on hover
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#4CAF50'}
+            >
               Create Offer
             </button>
           </Container>

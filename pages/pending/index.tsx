@@ -71,8 +71,40 @@ const Pending: NextPage = () => {
             <h2>{}</h2>
             <br></br>
             <div style={{ marginTop: 40 }}>
-              <button onClick={() => replyOffer(true)}>Accept</button>
-              <button onClick={() => replyOffer(false)}>Refuse</button>
+<button 
+  onClick={() => replyOffer(true)} 
+  style={{ 
+    fontSize: '18px', 
+    padding: '10px 20px', 
+    borderRadius: '8px',
+    backgroundColor: '#4CAF50', // Example color for Accept
+    color: 'white',
+    cursor: 'pointer',
+    border: 'none'
+  }}
+  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#45a049'} // Darker shade on hover
+  onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#4CAF50'}
+>
+  Accept
+</button>
+<span style={{ marginRight: '40px' }}></span>
+<button 
+  onClick={() => replyOffer(false)} 
+  style={{ 
+    fontSize: '18px', 
+    padding: '10px 20px', 
+    borderRadius: '8px',
+    backgroundColor: '#f44336', // Example color for Refuse
+    color: 'white',
+    cursor: 'pointer',
+    border: 'none'
+  }}
+  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#da190b'} // Darker shade on hover
+  onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f44336'}
+>
+  Refuse
+</button>
+
             </div>
           </Container>
         </div>
