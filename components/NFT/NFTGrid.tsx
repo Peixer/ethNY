@@ -9,8 +9,8 @@ import styles from "../../styles/Buy.module.css";
 type Props = {
   isLoading: boolean;
   data: any[] | undefined;
-  handleSelect: (nft: any) => void;
-  isSelected: (nft: any) => boolean;
+  handleSelect?: (nft: any) => void;
+  isSelected?: (nft: any) => boolean;
   emptyText?: string;
 };
 
@@ -24,7 +24,7 @@ export default function NFTGrid({
   return (
     <div className={styles.nftGridContainer}>
       {isLoading ? (
-        [...Array(20)].map((_, index) => (
+        [...Array(10)].map((_, index) => (
           <div key={index} className={styles.nftContainer}>
             <Skeleton key={index} width={"100%"} height="312px" />
           </div>
@@ -34,8 +34,8 @@ export default function NFTGrid({
           <div
             key={nft.metadata.id}
             className={styles.nftContainer}
-            style={{border: isSelected(nft) ? "2px solid green" : ""}}
-            onClick={() => handleSelect(nft)}
+            style={{border: isSelected!(nft) ? "2px solid green" : ""}}
+            onClick={() => handleSelect!(nft)}
           >
             <NFT nft={nft} />
           </div>
