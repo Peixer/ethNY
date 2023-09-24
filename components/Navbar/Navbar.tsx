@@ -41,7 +41,7 @@ export function Navbar() {
 
         <div className={styles.navRight}>
           <div className={styles.navConnect}>
-            <Link href={`/pending/${address}`} style={{ marginRight: 20 }}>
+            <Link href={`/pending/`} style={{ marginRight: 20 }}>
               <Image
                 className={styles.profileImage}
                 src="/user-icon.png"
