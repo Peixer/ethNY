@@ -90,7 +90,7 @@ contract TicketSale is IERC721Receiver {
         saleCounter++;
     }
 
-    function acceptOffer(uint256 saleId) public {
+    function acceptOffer(uint256 saleId, uint256[] memory prices) public {
         require(msg.sender == allSales[saleId].buyer, 'You are not the buyer!!');
          require(
             allSales[saleId].status == Status.OPEN,
@@ -102,16 +102,16 @@ contract TicketSale is IERC721Receiver {
         );
 
         Sale memory sale = allSales[saleId];
-        IERC20(usdBaseCoin).transferFrom(msg.sender, sale.seller, SafeMath.mul(sale.price,0.9));
+        IERC20(usdBaseCoin).transferFrom(msg.sender, sale.seller, prices[0]);
 
         // Royalties
-        IERC20(usdBaseCoin).transferFrom(msg.sender, ticketContract, sale.price * 5);
-        IERC20(usdBaseCoin).transferFrom(msg.sender, owner, sale.price * 0.05);
+        IERC20(usdBaseCoin).transferFrom(msg.sender, ticketContract, prices[1]);
+        IERC20(usdBaseCoin).transferFrom(msg.sender, owner, prices[2]);
         
         for (uint256 i = 0; i < sale.ticketIds.length; i++) {
-            IERC721(sale.ticketIds[i]).safeTransferFrom(
+            IERC721(ticketContract).safeTransferFrom(
                 address(this),
-                msg.sender, //buyer
+                msg.sender,
                 sale.ticketIds[i]
             );
         }
@@ -119,11 +119,35 @@ contract TicketSale is IERC721Receiver {
         allSales[saleId].status = Status.CLOSED;
     }
 
-    function postOffer(uint256 _ticketId, uint256 _price) external {
-        require(IERC20(usdBaseCoin).balanceOf(msg.sender) >= _price, 
-        "insufficient funds, top-off your wallet, bro.");
-        // offersByTicketId
+    function rejectOffer(uint256 saleId) public {
+        require(msg.sender == allSales[saleId].buyer, 'You are not the buyer!!');
+         require(
+            allSales[saleId].status == Status.OPEN,
+            "Can't Accept now"
+        );
+
+        Sale memory sale = allSales[saleId];
+        
+        for (uint256 i = 0; i < sale.ticketIds.length; i++) {
+            IERC721(ticketContract).safeTransferFrom(
+                address(this),
+                sale.seller,
+                sale.ticketIds[i]
+            );
+        }
+
+        allSales[saleId].status = Status.CANCELLED;
     }
+
+    function hasPendingOffer(address wallet) view public{
+
+    }
+
+    // function postOffer(uint256 _ticketId, uint256 _price) external {
+    //     require(IERC20(usdBaseCoin).balanceOf(msg.sender) >= _price, 
+    //     "insufficient funds, top-off your wallet, bro.");
+    //     // offersByTicketId
+    // }
 
     function onERC721Received (
         address operator,
