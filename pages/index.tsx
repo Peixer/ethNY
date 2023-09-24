@@ -4,6 +4,8 @@ import NFTGrid from "../components/NFT/NFTGrid";
 import { useAddress, useContract, useContractWrite } from "@thirdweb-dev/react";
 import Container from "../components/Container/Container";
 import { useEffect, useState } from "react";
+import { ENS } from "@ensdomains/ensjs";
+import { ethers } from "ethers";
 import {
   NFT_COLLECTION_ADDRESSES,
   SWAP_ADDRESS,
@@ -117,19 +119,29 @@ const Home: NextPage = () => {
 
   async function createOffer() {
     if (select.length > 0) {
-      // addressFieldText
-      // TODO: convert this addressFieldText to address, it can be a ENS or a address
+      let callWithProvider = null;
+      try {
+        const ENSInstance = new ENS();
+        const provider = new ethers.providers.JsonRpcProvider(
+          process.env.NEXT_PUBLIC_ALCHEMY_PROVIDER
+        );
+        callWithProvider = await ENSInstance.withProvider(provider).getOwner(
+          addressFieldText
+        );
+      } catch (e) {
+        console.log(e);
+      }
 
       const response = await mutateAsync({
         args: {
           tokenIds: select.map((x) => ({
             tokenId: x.tokenId,
           })),
-          address: addressFieldText,
+          address: callWithProvider?.owner ?? addressFieldText,
           price,
         } as any,
       });
-      // TODO: Show a confirmation modal 
+      // TODO: Show a confirmation modal
       setAddressFieldText("");
       setPrice(0);
       setSelect([]);
@@ -144,10 +156,14 @@ const Home: NextPage = () => {
         <div className={styles.hero}>
           <Container maxWidth="lg">
             <h1>Select </h1>
-            <input placeholder="Search by username, address, or ENS"type="string" style={{ borderRadius: '15px', height: '30px', width: '350px'}}></input>
-            <div style= {{marginTop: "20px"}}>
+            <input
+              placeholder="Search by username, address, or ENS"
+              type="string"
+              style={{ borderRadius: "15px", height: "30px", width: "350px" }}
+            ></input>
+            <div style={{ marginTop: "20px" }}>
               <a onClick={() => filter("cochela")}>Cochella</a>
-              <span style={{ marginRight: '100px' }}></span>
+              <span style={{ marginRight: "100px" }}></span>
               <a onClick={() => filter("ens")}>ENS</a>
             </div>
 
@@ -161,8 +177,12 @@ const Home: NextPage = () => {
               }
             />
             <h2>How much I want to sell this shit</h2>
-            <div style= {{marginTop: "20px"}}>
-              <input placeholder="input amount to sell"type="number" style={{ borderRadius: '15px', height: '30px', width: '200px'}}></input>
+            <div style={{ marginTop: "20px" }}>
+              <input
+                placeholder="input amount to sell"
+                type="number"
+                style={{ borderRadius: "15px", height: "30px", width: "200px" }}
+              ></input>
             </div>
             <br></br>
             <button onClick={createOffer} style={{ marginTop: 40 }}>
