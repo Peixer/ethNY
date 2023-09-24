@@ -176,7 +176,7 @@ const Home: NextPage = () => {
                 "Looks like there are no NFTs in this collection. Did you import your contract on the thirdweb dashboard? https://thirdweb.com/dashboard"
               }
             />
-            <h2>How much I want to sell this shit</h2>
+            <h2>How much do you want to sell this NFT Ticket for</h2>
             <div style={{ marginTop: "20px" }}>
               <input
                 placeholder="input amount to sell"
