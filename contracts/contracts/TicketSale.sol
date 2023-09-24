@@ -139,15 +139,25 @@ contract TicketSale is IERC721Receiver {
         allSales[saleId].status = Status.CANCELLED;
     }
 
-    function hasPendingOffer(address wallet) view public{
-
+    struct PendingOffer {
+        uint256 tokenId;
+        string tokenURI;
     }
 
-    // function postOffer(uint256 _ticketId, uint256 _price) external {
-    //     require(IERC20(usdBaseCoin).balanceOf(msg.sender) >= _price, 
-    //     "insufficient funds, top-off your wallet, bro.");
-    //     // offersByTicketId
-    // }
+    function hasPendingOffer(address wallet) view public returns (PendingOffer[] memory) {
+        PendingOffer[] memory pendingOffers;
+        for (uint i = 0; i < userSales[wallet].length; i++) {
+            if(userSales[wallet][i].status == STATUS.OPEN) {
+                for (uint j = 0; j < userSales[wallet][i].ticketIds.length; j++) {
+                    string uri = IERC721(ticketContract).tokenURI(userSales[wallet][i].ticketIds[j])
+                    pendingOffers.push(PendingOffer(userSales[wallet][i].ticketIds[j], uri))
+                }
+            }
+        }
+
+        return pendingOffers;
+    }  
+
 
     function onERC721Received (
         address operator,
