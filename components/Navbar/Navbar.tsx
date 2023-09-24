@@ -1,7 +1,9 @@
-import { ConnectWallet, useAddress } from "@thirdweb-dev/react";
+import { ConnectWallet, useAddress, useContract } from "@thirdweb-dev/react";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./Navbar.module.css";
+import { SWAP_ADDRESS } from "../../const/contractAddresses";
+import { useEffect, useState } from "react";
 
 /**
  * Navigation bar that shows up on all pages.
@@ -9,6 +11,19 @@ import styles from "./Navbar.module.css";
  */
 export function Navbar() {
   const address = useAddress();
+  const [isPending, setIsPending] = useState<boolean>(false);
+  const { contract } = useContract(SWAP_ADDRESS);
+
+  useEffect(() => {
+    async function hasPendingOffer() {
+      if (address && contract) {
+        const data = await contract.call("userHasPendingOffer", [address]);
+        return data;
+      }
+      return false;
+    }
+    hasPendingOffer().then(setIsPending).catch(console.error);
+  }, [address, contract]);
 
   return (
     <div className={styles.navContainer}>
@@ -16,38 +31,28 @@ export function Navbar() {
         <div className={styles.navLeft}>
           <Link href="/" className={`${styles.homeLink} ${styles.navLeft}`}>
             <Image
-              src="/logo.png"
+              src="/icon1.png" style={{ borderRadius: '15px'}}
               width={48}
               height={48}
               alt="NFT marketplace sample logo"
             />
           </Link>
-
-          <div className={styles.navMiddle}>
-            <Link href="/buy" className={styles.link}>
-              Buy
-            </Link>
-            <Link href="/sell" className={styles.link}>
-              Sell
-            </Link>
-          </div>
         </div>
 
         <div className={styles.navRight}>
           <div className={styles.navConnect}>
-            <ConnectWallet theme="dark" btnTitle="Connect Wallet" />
-          </div>
-          {address && (
-            <Link className={styles.link} href={`/profile/${address}`}>
+            <Link href={`/pending/`} style={{ marginRight: 20 }}>
               <Image
                 className={styles.profileImage}
                 src="/user-icon.png"
                 width={42}
                 height={42}
                 alt="Profile"
+                style={{ border: isPending ? "2px solid red" : "none" }}
               />
             </Link>
-          )}
+            <ConnectWallet theme="dark" btnTitle="Connect Wallet" />
+          </div>
         </div>
       </nav>
     </div>
