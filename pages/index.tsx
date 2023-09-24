@@ -118,10 +118,10 @@ const Home: NextPage = () => {
         <div className={styles.hero}>
           <Container maxWidth="lg">
             <h1>Select </h1>
-
-            <div>
+            <input placeholder="Search by username, address, or ENS"type="string" style={{ borderRadius: '15px', height: '30px', width: '350px'}}></input>
+            <div style= {{marginTop: "20px"}}>
               <a onClick={() => filter("cochela")}>Cochella</a>
-              <span> | </span>
+              <span style={{ marginRight: '100px' }}></span>
               <a onClick={() => filter("ens")}>ENS</a>
             </div>
 
@@ -135,7 +135,9 @@ const Home: NextPage = () => {
               }
             />
             <h2>How much I want to sell this shit</h2>
-            <input type="number"></input>
+            <div style= {{marginTop: "20px"}}>
+              <input placeholder="input amount to sell"type="number" style={{ borderRadius: '15px', height: '30px', width: '200px'}}></input>
+            </div>
             <br></br>
             <button onClick={createOffer}>Offer</button>
           </Container>
