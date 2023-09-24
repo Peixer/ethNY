@@ -1,14 +1,13 @@
 import { ethers } from "ethers";
 import 'dotenv/config';
-import { TestToken__factory } from "../typechain-types";
+import { TicketSale__factory } from "../typechain-types";
+
+const nft_address = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
 async function main() {
   const rpcUrl = process.env.RPC_URL;
     if (!rpcUrl) throw new Error("Invalid RPC URL");
     const provider = new ethers.JsonRpcProvider(rpcUrl);
-    const lastBlock = await provider.getBlock("latest");
-    console.log(`The latest block number is \n`);
-    console.log({lastBlock});
 
     const private_key = process.env.PRIVATE_KEY;
     if (!private_key || private_key.length != 64) throw new Error ("Invalid private key");
@@ -18,11 +17,11 @@ async function main() {
     console.log(`the deployer balance is`);
     console.log(`${balance} BASE goerli`);
 
-    const nftFactory = new TestToken__factory(deployer);
-    const nftContract = await nftFactory.deploy();
-    await nftContract.waitForDeployment();
-    const nftContractAddress = await nftContract.getAddress();
-    console.log(`The NFT contract address is ${nftContractAddress}`);
+    const escrowFactory = new TicketSale__factory(deployer);
+    const escrowContract = await escrowFactory.deploy(nft_address);
+    await escrowContract.waitForDeployment();
+    const escrowContractAddress = await escrowContract.getAddress();
+    console.log(`The escrow contract address is ${escrowContractAddress}`);
 }
 
 main().catch((error) => {
