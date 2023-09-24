@@ -44,7 +44,7 @@ export function Navbar() {
             <Link href={`/pending/`} style={{ marginRight: 20 }}>
               <Image
                 className={styles.profileImage}
-                src="/user-icon.png"
+                src="/nbell.png"
                 width={42}
                 height={42}
                 alt="Profile"
